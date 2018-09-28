@@ -16,11 +16,12 @@ class FreeProxies:
 
 	BASE_URL_ = 'https://free-proxy-list.net'
 
-	def __init__(self, anonymity='elite proxy', wait=30):
+	def __init__(self, anonymity='elite proxy', https='yes', wait=30):
 
 		assert anonymity in ['elite proxy', 'transparent', 'anonymous'], print('choose correct anonymity')
 
 		self.anonymity = anonymity
+		self.https = https
 		self.wait  = wait
 
 		self.lst = []
@@ -37,6 +38,11 @@ class FreeProxies:
 		
 		WebDriverWait(self.driver, self.wait).until(EC.visibility_of_element_located((By.CSS_SELECTOR, 
 				f'#proxylisttable>tfoot>tr>th:nth-child(5)>select>option[value="{self.anonymity}"]'))).click()
+		
+		time.sleep(3)
+
+		WebDriverWait(self.driver, self.wait).until(EC.visibility_of_element_located((By.CSS_SELECTOR, 
+				f'#proxylisttable > tfoot > tr > th.hx.ui-state-default > select > option[value="{self.https}"]'))).click()
 		
 		time.sleep(3)
 
@@ -91,7 +97,7 @@ class FreeProxies:
 
 		with open(to_where, 'w') as f:	
 			for _ in self.lst:
-				f.write('ip: {} port: {}\n'.format(*_.split()[:2]))
+				f.write('{}:{}\n'.format(*_.split()[:2]))
 
 		print(f'saved to {to_where}')
 
